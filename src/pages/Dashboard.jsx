@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { getRestaurants, ordersTrends } from "../services/apis";
+
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import LineGraph from "../components/LineGraph";
 
 // const restaurants = [
 //   { name: "The Spice House", location: "Downtown", cuisine: "Indian" },
@@ -20,6 +22,7 @@ const Dashboard = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [ordersTrendsData, setOrdersTrendsData] = useState(null);
 
   const [selectedRestaurantId, setSelectedRestaurantId] = useState(null);
 
@@ -29,15 +32,17 @@ const Dashboard = () => {
     setEndDate(end);
 
     // Call the parent component's function with the new dates
-    if (start && end) {
-      onDateChange(
-        start.toISOString().split("T")[0],
-        end.toISOString().split("T")[0]
-      );
-    }
+    // if (start && end) {
+    //   onDateChange(
+    //     start.toISOString().split("T")[0],
+    //     end.toISOString().split("T")[0]
+    //   );
+    // }
   };
 
-  const restaurantName = restaurants.find((r) => r.id === selectedRestaurantId)?.name;
+  const restaurantName = restaurants.find(
+    (r) => r.id === selectedRestaurantId
+  )?.name;
 
   useEffect(() => {
     const fetchRestaurants = async () => {
@@ -54,26 +59,34 @@ const Dashboard = () => {
     fetchRestaurants();
   }, [searchInput, selectedLocation, selectedCuisine]);
 
-
-
   useEffect(() => {
     const fetchOrdersTrends = async () => {
       if (selectedRestaurantId && startDate && endDate) {
-
         const formatedStartDate = startDate.toISOString().slice(0, 10);
         const formatedEndDate = endDate.toISOString().slice(0, 10);
-        const data = await ordersTrends(
+        const response = await ordersTrends(
           selectedRestaurantId,
           formatedStartDate,
           formatedEndDate
         );
-        console.log(data, "orders trends data");
+        console.log(response, "orders trends data");
+        setOrdersTrendsData(response?.data.daily_records);
       }
     };
     fetchOrdersTrends();
   }, [selectedRestaurantId, startDate, endDate]);
 
+  console.log(ordersTrendsData, "checkkk");
 
+  const dailyRevenueData =
+    ordersTrendsData?.map((el) => {
+      return {
+        date: el.order_date,
+        revenue: el.daily_revenue,
+      };
+    }) || [];
+
+    console.log(dailyRevenueData, "dailyRevenueData");
 
   return (
     <div>
@@ -147,7 +160,10 @@ const Dashboard = () => {
             ) : (
               restaurants?.map((r, idx) => (
                 <tr key={idx} className="hover:bg-gray-50">
-                  <td className="border border-gray-800 px-4 py-2 text-left" onClick={() => setSelectedRestaurantId(r.id)}>
+                  <td
+                    className="border border-gray-800 px-4 py-2 text-left"
+                    onClick={() => setSelectedRestaurantId(r.id)}
+                  >
                     {r.name}
                   </td>
                   <td className="border border-gray-800 px-4 py-2 text-left">
@@ -165,42 +181,41 @@ const Dashboard = () => {
 
       {/* graph */}
 
-
       <div>
+        <div className="p-6 w-full flex justify-between items-center">
+          <h3 className="text-xl font-semibold">
+            {selectedRestaurantId && startDate && endDate ? (
+              <span>
+                Showing performance for {restaurantName} from{" "}
+                {startDate.toLocaleDateString()} to{" "}
+                {endDate.toLocaleDateString()}
+              </span>
+            ) : (
+              <span>
+                Select a restaurant and date range to see its performance.
+              </span>
+            )}
+          </h3>
 
-      <div className="p-6 w-full flex justify-between items-center">
-        <h3 className="text-xl font-semibold">
-      {
-        selectedRestaurantId && startDate && endDate ? (
-          <span>
-            Showing performance for {restaurantName} from {startDate.toLocaleDateString()} to {endDate.toLocaleDateString()}
-          </span>
-        ) : (
-          <span>Select a restaurant and date range to see its performance.</span>
-        )
-      }
+          <button
+            onClick={() => setShowDatePicker((prev) => !prev)}
+            className="bg-blue-500 text-white rounded px-4 py-2"
+          >
+            {" "}
+            {startDate && endDate ? (
+              <span>
+                {startDate.toLocaleDateString()} -{" "}
+                {endDate.toLocaleDateString()}
+              </span>
+            ) : (
+              "Select Date Range"
+            )}
+          </button>
+        </div>
 
-
-        </h3>
-
-        <button
-          onClick={() => setShowDatePicker((prev) => !prev)}
-          className="bg-blue-500 text-white rounded px-4 py-2"
-        >
-          {" "}
-          {startDate && endDate ? (
-            <span>
-              {startDate.toLocaleDateString()} - {endDate.toLocaleDateString()}
-            </span>
-          ) : (
-            "Select Date Range"
-          )}
-        </button>
-      </div>
-
-      <div>
-
-      </div>
+        <div>
+          { dailyRevenueData.length > 0 && <LineGraph dataProps={dailyRevenueData} />}
+        </div>
       </div>
       {showDatePicker && (
         <DatePicker
