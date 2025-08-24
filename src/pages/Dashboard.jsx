@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { getRestaurants, ordersTrends } from "../services/apis";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import LineGraph from "../components/LineGraph";
+import HeatmapGraph from "../components/HeatmapGraph";
+import GroupedBarGraph from "../components/GroupedBarGraph";
 
 // const restaurants = [
 //   { name: "The Spice House", location: "Downtown", cuisine: "Indian" },
@@ -23,8 +25,19 @@ const Dashboard = () => {
   const [endDate, setEndDate] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [ordersTrendsData, setOrdersTrendsData] = useState(null);
+  const [trendyHrs, setTrendyHrs] = useState(null);
+
+  const [topRestaurants, setTopRestaurants] = useState([]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [totalRestaurants, setTotalRestaurants] = useState(1);
 
   const [selectedRestaurantId, setSelectedRestaurantId] = useState(null);
+
+  const totalPages = Math.ceil(totalRestaurants / 2);
+
+  const dateRef = useRef();
 
   const onChange = (dates) => {
     const [start, end] = dates;
@@ -49,15 +62,17 @@ const Dashboard = () => {
       const data = await getRestaurants(
         searchInput,
         selectedLocation,
-        selectedCuisine
+        selectedCuisine,
+        currentPage
       );
       console.log(data, "data");
       setRestaurants(data.data);
       setAllLocations([...new Set(data.data.map((r) => r.location))]);
       setAllCuisines([...new Set(data.data.map((r) => r.cuisine))]);
+      setTotalRestaurants(data.total_count);
     };
     fetchRestaurants();
-  }, [searchInput, selectedLocation, selectedCuisine]);
+  }, [searchInput, selectedLocation, selectedCuisine, currentPage]);
 
   useEffect(() => {
     const fetchOrdersTrends = async () => {
@@ -71,10 +86,24 @@ const Dashboard = () => {
         );
         console.log(response, "orders trends data");
         setOrdersTrendsData(response?.data.daily_records);
+        setTrendyHrs(response?.data?.trendy_hours);
+        setTopRestaurants(response?.data?.max_revenue_restaurants);
       }
     };
     fetchOrdersTrends();
   }, [selectedRestaurantId, startDate, endDate]);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dateRef.current && !dateRef.current.contains(event.target)) {
+        setShowDatePicker(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   console.log(ordersTrendsData, "checkkk");
 
@@ -86,7 +115,27 @@ const Dashboard = () => {
       };
     }) || [];
 
-    console.log(dailyRevenueData, "dailyRevenueData");
+  console.log(dailyRevenueData, "dailyRevenueData");
+
+  const dailyOrdersCount =
+    ordersTrendsData?.map((el) => {
+      return {
+        date: el.order_date,
+        count: el.orders_count,
+      };
+    }) || [];
+
+  const dailyAverageOrderValue =
+    ordersTrendsData?.map((el) => {
+      return {
+        date: el.order_date,
+        average: el.average_order_value,
+      };
+    }) || [];
+
+  console.log(dailyAverageOrderValue, "dailyAverageOrderValue");
+
+
 
   return (
     <div>
@@ -176,7 +225,27 @@ const Dashboard = () => {
               ))
             )}
           </tbody>
+
         </table>
+          <div className="flex items-center gap-2 mt-4">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="px-3 py-1 border rounded disabled:opacity-50 bg-blue-500 text-white rounded px-4 py-2"
+            >
+              Prev
+            </button>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1 border rounded disabled:opacity-50 bg-blue-500 text-white rounded px-4 py-2"
+            >
+              Next
+            </button>
+          </div>
       </div>
 
       {/* graph */}
@@ -211,22 +280,95 @@ const Dashboard = () => {
               "Select Date Range"
             )}
           </button>
+
+          {showDatePicker && (
+            <div className="absolute right-5 bottom-20" ref={dateRef}>
+              <DatePicker
+                selected={startDate}
+                onChange={onChange}
+                startDate={startDate}
+                endDate={endDate}
+                selectsRange
+                inline
+              />
+            </div>
+          )}
         </div>
 
-        <div>
-          { dailyRevenueData.length > 0 && <LineGraph dataProps={dailyRevenueData} />}
-        </div>
+        {dailyRevenueData &&
+          dailyOrdersCount &&
+          dailyAverageOrderValue &&
+          trendyHrs && (
+            <>
+              <div className="flex justify-around items-center mb-8">
+                <div className="w-1/2 pr-2">
+                  <LineGraph
+                    dataProps={dailyRevenueData}
+                    label="Daily Revenue"
+                  />
+                </div>
+                <div className="w-1/2 pl-2">
+                  <LineGraph
+                    dataProps={dailyOrdersCount}
+                    label="Daily Orders"
+                  />
+                </div>
+              </div>
+              <div className="flex justify-around items-center mt-8">
+                <div className="w-1/2 pl-2">
+                  <LineGraph
+                    dataProps={dailyAverageOrderValue}
+                    label="Daily Average Order Value"
+                  />
+                </div>
+                <div className="w-1/2 pr-2">
+                  <GroupedBarGraph trendy_hours={trendyHrs} />
+                </div>
+              </div>
+
+              <div className="mt-8">
+                <h3 className="text-lg font-semibold mb-2">
+                  Top 3 Restaurants by Revenue
+                </h3>
+                <table className="w-full border-collapse border border-gray-300">
+                  <thead>
+                    <tr>
+                      <th className="border border-gray-800 px-4 py-2 text-left">
+                        Restaurant Name
+                      </th>
+                      <th className="border border-gray-800 px-4 py-2 text-left">
+                        Revenue
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {topRestaurants && topRestaurants.length > 0 ? (
+                      topRestaurants.map((restaurant) => (
+                        <tr key={restaurant.restaurant_name}>
+                          <td className="border border-gray-800 px-4 py-2 text-left">
+                            {restaurant.restaurant_name}
+                          </td>
+                          <td className="border border-gray-800 px-4 py-2 text-left">
+                            ${restaurant.max_revenue}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan="2"
+                          className="border border-gray-800 px-4 py-2 text-center"
+                        >
+                          No data available
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
       </div>
-      {showDatePicker && (
-        <DatePicker
-          selected={startDate}
-          onChange={onChange}
-          startDate={startDate}
-          endDate={endDate}
-          selectsRange
-          inline
-        />
-      )}
     </div>
   );
 };

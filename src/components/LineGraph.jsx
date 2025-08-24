@@ -21,14 +21,14 @@ ChartJS.register(
 );
 
 
-const LineGraph = ({ dataProps }) => {
+const LineGraph = ({ dataProps, label }) => {
 
     const data = {
       labels: dataProps.map((item) => item.date),
       datasets: [
         {
-          label: 'Daily Revenue',
-          data: dataProps.map((item) => item.revenue),
+          label: label,
+          data: label === "Daily Revenue" ? dataProps.map((item) => item.revenue) : label === "Daily Orders" ? dataProps.map((item) => item.count) : dataProps.map((item) => item.average),
           borderColor: 'rgba(75, 192, 192, 1)',
           backgroundColor: 'rgba(75, 192, 192, 0.2)',
         },
@@ -42,7 +42,7 @@ const LineGraph = ({ dataProps }) => {
       },
       title: {
         display: true,
-        text: 'Daily Revenue',
+        text: label,
       },
     },
   };
