@@ -6,7 +6,7 @@ export const getRestaurants = async (searchInput, selectedLocation, selectedCuis
 };
 
 
-export const ordersTrends = async (restaurantId, startDate, endDate) => {
-  const response = await fetch(`${BASE_URL}/order_trends.php?restaurant_id=${restaurantId}&start_date=${startDate}&end_date=${endDate}`);
+export const ordersTrends = async (restaurantId, startDate, endDate, amountMin, amountMax, hourMin, hourMax) => {
+  const response = await fetch(`${BASE_URL}/order_trends.php?restaurant_id=${restaurantId}&start_date=${startDate}&end_date=${endDate}&amount_min=${amountMin}&amount_max=${amountMax}&hour_min=${hourMin}&hour_max=${hourMax}`);
   return response.json();
 };

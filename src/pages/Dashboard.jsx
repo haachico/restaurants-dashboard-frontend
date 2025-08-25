@@ -25,6 +25,11 @@ const Dashboard = () => {
   const [selectedRestaurantId, setSelectedRestaurantId] = useState(null);
 
   const [selectedRestaurantName, setSelectedRestaurantName] = useState("");
+  // Amount and hour range filters
+  const [amountRange, setAmountRange] = useState([0, 10000]);
+  const [hourRange, setHourRange] = useState([0, 23]);
+
+  // console.log(hourRange, amountRange, "Hour and Amount Range");
 
   const totalPages = Math.ceil(totalRestaurants / 2);
   const dateRef = useRef();
@@ -52,23 +57,39 @@ const Dashboard = () => {
       );
       setRestaurants(data.data);
       // Generate unique lists of locations and cuisines for dropdowns
-      setAllLocations([...new Set(data.distinct_locations_cuisines.map((r) => r.location))]);
-      setAllCuisines([...new Set(data.distinct_locations_cuisines.map((r) => r.cuisine))]);
+      setAllLocations([
+        ...new Set(data.distinct_locations_cuisines.map((r) => r.location)),
+      ]);
+      setAllCuisines([
+        ...new Set(data.distinct_locations_cuisines.map((r) => r.cuisine)),
+      ]);
       setTotalRestaurants(data.total_count);
     };
     fetchRestaurants();
   }, [searchInput, selectedLocation, selectedCuisine, currentPage]);
 
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   // Fetch orders trends data when a restaurant or date range is selected
   useEffect(() => {
     const fetchOrdersTrends = async () => {
       if (selectedRestaurantId && startDate && endDate) {
-        const formatedStartDate = startDate.toISOString().slice(0, 10);
-        const formatedEndDate = endDate.toISOString().slice(0, 10);
+        const formatedStartDate = formatDate(startDate);
+        const formatedEndDate = formatDate(endDate);
+        // Pass amount and hour range to backend if your API supports it
         const response = await ordersTrends(
           selectedRestaurantId,
           formatedStartDate,
-          formatedEndDate
+          formatedEndDate,
+          amountRange[0],
+          amountRange[1],
+          hourRange[0],
+          hourRange[1]
         );
         setOrdersTrendsData(response?.data.daily_records);
         setTrendyHrs(response?.data?.trendy_hours);
@@ -76,7 +97,7 @@ const Dashboard = () => {
       }
     };
     fetchOrdersTrends();
-  }, [selectedRestaurantId, startDate, endDate]);
+  }, [selectedRestaurantId, startDate, endDate, amountRange, hourRange]);
 
   // Handle clicking outside the date picker to close it
   useEffect(() => {
@@ -109,6 +130,9 @@ const Dashboard = () => {
       date: el.order_date,
       average: el.average_order_value,
     })) || [];
+  console.log(dailyRevenueData, "Daily Revenue Data");
+  console.log(dailyOrdersCount, "Daily Orders Count");
+  console.log(dailyAverageOrderValue, "Daily Average Order Value");
 
   console.log(restaurantName, selectedRestaurantId, "Restaurant Name");
 
@@ -128,13 +152,16 @@ const Dashboard = () => {
             onChange={(e) => setSearchInput(e.target.value)}
           />
           <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
-            <button onClick={() => {
-              setSearchInput("");
-              setSelectedLocation("");
-              setSelectedCuisine("");
-              setSelectedRestaurantName("");
-              setSelectedRestaurantId(null);
-            }} className="border border-gray-300 text-gray-700 rounded-lg px-4 py-2 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 border border-[#000] text-[#000] rounded px-3 py-2 bg-white" >
+            <button
+              onClick={() => {
+                setSearchInput("");
+                setSelectedLocation("");
+                setSelectedCuisine("");
+                setSelectedRestaurantName("");
+                setSelectedRestaurantId(null);
+              }}
+              className="border border-gray-300 text-gray-700 rounded-lg px-4 py-2 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 border border-[#000] text-[#000] rounded px-3 py-2 bg-white"
+            >
               Clear Filters
             </button>
             <select
@@ -143,7 +170,7 @@ const Dashboard = () => {
               onChange={(e) => setSelectedLocation(e.target.value)}
             >
               <option value="">All locations</option>
-            {allLocations.map((location, index) => (
+              {allLocations.map((location, index) => (
                 <option key={index} value={location}>
                   {location}
                 </option>
@@ -239,7 +266,7 @@ const Dashboard = () => {
       </div>
 
       <div className="bg-white rounded-lg shadow-lg p-8">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 relative">
+        <div className="flex flex-col md:flex-row flex-wrap justify-between items-start md:items-center mb-6 gap-4 relative">
           <h3 className="text-xl font-semibold text-gray-800 mb-4 md:mb-0">
             {selectedRestaurantId && startDate && endDate ? (
               <span>
@@ -253,31 +280,126 @@ const Dashboard = () => {
               </span>
             )}
           </h3>
-          <button
-            onClick={() => setShowDatePicker((prev) => !prev)}
-            className="bg-blue-500 text-white rounded-lg px-4 py-2 shadow-sm hover:bg-blue-600 transition"
-          >
-            {startDate && endDate ? (
-              <span>
-                {startDate.toLocaleDateString()} -{" "}
-                {endDate.toLocaleDateString()}
-              </span>
-            ) : (
-              "Select Date Range"
+          <div className="flex flex-wrap gap-4 items-center">
+            {selectedRestaurantId &&
+              startDate &&
+              endDate &&
+              ordersTrendsData && (
+                <>
+                  {/* Amount Range Filter */}
+                  <div className="flex flex-col items-start mr-4">
+                    <label className="text-xs text-gray-600 mb-1">
+                      Amount Range :{" "}
+                    </label>
+                    <div className="flex gap-2 items-center">
+                      <input
+                        type="number"
+                        min={0}
+                        max={amountRange[1]}
+                        value={amountRange[0]}
+                        onChange={(e) =>
+                          setAmountRange([
+                            Number(e.target.value),
+                            amountRange[1],
+                          ])
+                        }
+                        className="border border-gray-300 rounded px-2 py-1 w-20 bg-white"
+                        placeholder="Min"
+                      />
+                      <span>-</span>
+                      <input
+                        type="number"
+                        min={amountRange[0]}
+                        value={amountRange[1]}
+                        onChange={(e) =>
+                          setAmountRange([
+                            amountRange[0],
+                            Number(e.target.value),
+                          ])
+                        }
+                        className="border border-gray-300 rounded px-2 py-1 w-20 bg-white"
+                        placeholder="Max"
+                      />
+                    </div>
+                  </div>
+                  {/* Hour Range Filter */}
+                  <div className="flex flex-col items-start mr-8">
+                    <label className="text-xs text-gray-600 mb-1">
+                      Hour Range :{" "}
+                    </label>
+                    <div className="flex gap-2 items-center">
+                      <input
+                        type="number"
+                        min={0}
+                        max={hourRange[1]}
+                        value={hourRange[0]}
+                        onChange={(e) => {
+                          let min = Math.max(
+                            0,
+                            Math.min(23, Number(e.target.value))
+                          );
+                          let max = hourRange[1];
+                          if (min > max) min = max;
+                          setHourRange([min, max]);
+                        }}
+                        className="border border-gray-300 rounded px-2 py-1 w-14 bg-white"
+                        placeholder="From"
+                      />
+                      <span>-</span>
+                      <input
+                        type="number"
+                        min={hourRange[0]}
+                        max={23}
+                        value={hourRange[1]}
+                        onChange={(e) => {
+                          let min = hourRange[0];
+                          let max = Math.min(23, Number(e.target.value));
+                          if (max < min) {
+                            max = min;
+                          }
+                          setHourRange([min, max]);
+                        }}
+                        className="border border-gray-300 rounded px-2 py-1 w-14 bg-white"
+                        placeholder="To"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+            {/* Date Picker Button */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowDatePicker((prev) => !prev);
+              }}
+              className="bg-blue-500 text-white rounded-lg px-4 py-2 shadow-sm hover:bg-blue-600 transition"
+            >
+              {startDate && endDate ? (
+                <span>
+                  {startDate.toLocaleDateString()} -{" "}
+                  {endDate.toLocaleDateString()}
+                </span>
+              ) : (
+                "Select Date Range"
+              )}
+            </button>
+            {showDatePicker && (
+              <div
+                className="absolute top-full right-0 mt-2 z-10"
+                ref={dateRef}
+                style={{ right: "-40px" }}
+              >
+                <DatePicker
+                  selected={startDate}
+                  onChange={onChange}
+                  startDate={startDate}
+                  endDate={endDate}
+                  selectsRange
+                  inline
+                />
+              </div>
             )}
-          </button>
-          {showDatePicker && (
-            <div className="absolute top-full right-0 mt-2 z-10" ref={dateRef}>
-              <DatePicker
-                selected={startDate}
-                onChange={onChange}
-                startDate={startDate}
-                endDate={endDate}
-                selectsRange
-                inline
-              />
-            </div>
-          )}
+          </div>
         </div>
 
         {selectedRestaurantId && startDate && endDate && ordersTrendsData && (
