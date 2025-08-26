@@ -4,6 +4,13 @@ A modern, responsive dashboard for restaurant analytics built with **React**, **
 
 ---
 
+## 🔗 Backend Repository
+
+The backend code for this project is in a separate repository:  
+[https://github.com/haachico/restaurant-dashboard-backend](https://github.com/haachico/restaurant-dashboard-backend)
+
+---
+
 ## ✨ Features
 
 - **Restaurant Listing:**  
@@ -45,7 +52,7 @@ A modern, responsive dashboard for restaurant analytics built with **React**, **
 1. **Clone the repository:**
     ```bash
     git clone <repository-url>
-    cd restaurants-dashboard-frontend/restaurants-dashboard
+    cd restaurants-dashboard-frontend
     ```
 
 2. **Create a `.env` file in the root directory:**
@@ -55,17 +62,17 @@ A modern, responsive dashboard for restaurant analytics built with **React**, **
     > ⚠️ The `.env` file is not included in the repository. You must create it yourself before running the project.
 
 3. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+    ```bash
+    npm install
+    ```
 
 4. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
+    ```bash
+    npm run dev
+    ```
 
 5. **Open in browser:**  
-   Visit [http://localhost:5173](http://localhost:5173)
+    Visit [http://localhost:5173](http://localhost:5173)
 
 ---
 
@@ -95,6 +102,7 @@ tailwind.config.js // Tailwind CSS config (darkMode: 'class')
 
 - **API Integration:**  
   The dashboard expects backend APIs for restaurants and metrics. Update API endpoints as needed.
+
 - **Styling:**  
   Easily customize colors and layout via Tailwind classes.
 
@@ -106,10 +114,4 @@ tailwind.config.js // Tailwind CSS config (darkMode: 'class')
 
 ![Light Mode Dashboard](./assets/light-dashboard.png)
 
-### Dark Mode
-
-![Dark Mode Dashboard](./assets/dark-dashboard.png)
-
----
-
-**Made with ❤️ using React and Tailwind
+###
