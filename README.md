@@ -48,18 +48,23 @@ A modern, responsive dashboard for restaurant analytics built with **React**, **
     cd restaurants-dashboard-frontend/restaurants-dashboard
     ```
 
+2. **Create a `.env` file in the root directory:**
+    ```
+    VITE_API_BASE_URL=https://your-api-url.com
+    ```
+    > ⚠️ The `.env` file is not included in the repository. You must create it yourself before running the project.
 
-2. **Install dependencies:**
+3. **Install dependencies:**
    ```bash
    npm install
    ```
 
-3 **Start the development server:**
+4. **Start the development server:**
    ```bash
    npm run dev
    ```
 
-4. **Open in browser:**  
+5. **Open in browser:**  
    Visit [http://localhost:5173](http://localhost:5173)
 
 ---
@@ -95,5 +100,16 @@ tailwind.config.js // Tailwind CSS config (darkMode: 'class')
 
 ---
 
+## 📸 Demo
 
-**Made with ❤️ using React
+### Light Mode
+
+![Light Mode Dashboard](./assets/light-dashboard.png)
+
+### Dark Mode
+
+![Dark Mode Dashboard](./assets/dark-dashboard.png)
+
+---
+
+**Made with ❤️ using React and Tailwind
