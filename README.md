@@ -107,11 +107,3 @@ tailwind.config.js // Tailwind CSS config (darkMode: 'class')
   Easily customize colors and layout via Tailwind classes.
 
 ---
-
-## 📸 Demo
-
-### Light Mode
-
-![Light Mode Dashboard](./assets/light-dashboard.png)
-
-###
