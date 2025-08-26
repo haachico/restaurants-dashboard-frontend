@@ -4,6 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Dashboard from './pages/Dashboard'
 import Header from './components/Header'
+import { ThemeProvider } from './context/ThemeContext.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -11,8 +12,10 @@ function App() {
   return (
     <>
     <div className="min-h-screen w-full">
-      <Header />
-      <Dashboard />
+      <ThemeProvider>
+        <Header />
+        <Dashboard />
+      </ThemeProvider>
     </div>
     </>
   )

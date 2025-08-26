@@ -137,17 +137,14 @@ const Dashboard = () => {
   console.log(restaurantName, selectedRestaurantId, "Restaurant Name");
 
   return (
-    <div className="bg-gray-100 min-h-screen p-8 font-sans pt-20">
+     <div className="bg-gray-100 dark:bg-gray-900 min-h-screen p-8 font-sans pt-20">
       {/* Restaurants Table Section */}
-      <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
-        {/* <h2 className="text-3xl font-bold mb-8 text-center tracking-tight text-gray-800">
-          DineDash
-        </h2> */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 mb-8">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
           <input
             type="text"
             placeholder="Search restaurants..."
-            className="border border-gray-300 text-gray-700 rounded-lg px-4 py-2 w-full md:w-72 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 rounded px-3 py-2 bg-white"
+            className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-900 rounded-lg px-4 py-2 w-full md:w-72 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 rounded px-3 py-2"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
           />
@@ -160,12 +157,12 @@ const Dashboard = () => {
                 setSelectedRestaurantName("");
                 setSelectedRestaurantId(null);
               }}
-              className="border border-gray-300 text-gray-700 rounded-lg px-4 py-2 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 border border-[#000] text-[#000] rounded px-3 py-2 bg-white"
+              className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-900 rounded-lg px-4 py-2 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 border border-[#000] text-[#000] dark:text-gray-200 rounded px-3 py-2"
             >
               Clear Filters
             </button>
             <select
-              className="border border-gray-300 text-gray-700 rounded-lg px-4 py-2 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 border border-[#000] text-[#000] rounded px-3 py-2 bg-white"
+              className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-900 rounded-lg px-4 py-2 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 border border-[#000] text-[#000] dark:text-gray-200 rounded px-3 py-2"
               value={selectedLocation}
               onChange={(e) => setSelectedLocation(e.target.value)}
             >
@@ -177,7 +174,7 @@ const Dashboard = () => {
               ))}
             </select>
             <select
-              className="border border-gray-300 text-gray-700 rounded-lg px-4 py-2 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 border border-[#000] text-[#000] rounded px-3 py-2 bg-white"
+              className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-900 rounded-lg px-4 py-2 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 border border-[#000] text-[#000] dark:text-gray-200 rounded px-3 py-2"
               value={selectedCuisine}
               onChange={(e) => setSelectedCuisine(e.target.value)}
             >
@@ -190,27 +187,27 @@ const Dashboard = () => {
             </select>
           </div>
         </div>
-        <div className="overflow-x-auto rounded-lg border border-gray-200">
-          <table className="min-w-full bg-white divide-y divide-gray-200">
+        <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+          <table className="min-w-full bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
             <thead>
               <tr>
-                <th className="px-6 py-3 border border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-3 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
                   Name
                 </th>
-                <th className="px-6 py-3 border border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-3 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
                   Location
                 </th>
-                <th className="px-6 py-3 border border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-3 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
                   Cuisine
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {restaurants?.length === 0 ? (
                 <tr>
                   <td
                     colSpan="3"
-                    className="px-6 py-4 text-center text-gray-500"
+                    className="px-6 py-4 text-center text-gray-500 dark:text-gray-400"
                   >
                     No restaurants found
                   </td>
@@ -219,21 +216,23 @@ const Dashboard = () => {
                 restaurants?.map((r, idx) => (
                   <tr
                     key={idx}
-                    className={`hover:bg-blue-50 transition duration-150 cursor-pointer text-left ${
-                      selectedRestaurantId === r.id ? "bg-blue-100" : ""
+                    className={`hover:bg-blue-50 dark:hover:bg-gray-700 transition duration-150 cursor-pointer text-left ${
+                      selectedRestaurantId === r.id
+                        ? "bg-blue-100 dark:bg-gray-700"
+                        : ""
                     }`}
                     onClick={() => {
                       setSelectedRestaurantId(r.id);
                       setSelectedRestaurantName(r.name);
                     }}
                   >
-                    <td className="px-6 py-4 border border-gray-200">
+                    <td className="px-6 py-4 border border-gray-200 dark:border-gray-700 dark:text-gray-200">
                       {r.name}
                     </td>
-                    <td className="px-6 py-4 border border-gray-200">
+                    <td className="px-6 py-4 border border-gray-200 dark:border-gray-700 dark:text-gray-200">
                       {r.location}
                     </td>
-                    <td className="px-6 py-4 border border-gray-200">
+                    <td className="px-6 py-4 border border-gray-200 dark:border-gray-700 dark:text-gray-200">
                       {r.cuisine}
                     </td>
                   </tr>
@@ -250,7 +249,7 @@ const Dashboard = () => {
           >
             Prev
           </button>
-          <span className="text-gray-700">
+          <span className="text-gray-700 dark:text-gray-200">
             Page {currentPage} of {totalPages}
           </span>
           <button
@@ -265,17 +264,17 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-lg p-8">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
         <div className="flex flex-col md:flex-row flex-wrap justify-between items-start md:items-center mb-6 gap-4 relative">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4 md:mb-0">
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4 md:mb-0">
             {selectedRestaurantId && startDate && endDate ? (
               <span>
-                Showing metrics for **{restaurantName}** from{" "}
+                Showing metrics for <b>{restaurantName}</b> from{" "}
                 {startDate.toLocaleDateString()} to{" "}
                 {endDate.toLocaleDateString()}
               </span>
             ) : (
-              <span className="text-gray-500">
+              <span className="text-gray-500 dark:text-gray-400">
                 Select a restaurant and date range to see its metrics.
               </span>
             )}
@@ -288,7 +287,7 @@ const Dashboard = () => {
                 <>
                   {/* Amount Range Filter */}
                   <div className="flex flex-col items-start mr-4">
-                    <label className="text-xs text-gray-600 mb-1">
+                    <label className="text-xs text-gray-600 dark:text-gray-300 mb-1">
                       Amount Range :{" "}
                     </label>
                     <div className="flex gap-2 items-center">
@@ -303,7 +302,7 @@ const Dashboard = () => {
                             amountRange[1],
                           ])
                         }
-                        className="border border-gray-300 rounded px-2 py-1 w-20 bg-white"
+                        className="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 rounded px-2 py-1 w-20"
                         placeholder="Min"
                       />
                       <span>-</span>
@@ -317,14 +316,14 @@ const Dashboard = () => {
                             Number(e.target.value),
                           ])
                         }
-                        className="border border-gray-300 rounded px-2 py-1 w-20 bg-white"
+                        className="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 rounded px-2 py-1 w-20 "
                         placeholder="Max"
                       />
                     </div>
                   </div>
                   {/* Hour Range Filter */}
                   <div className="flex flex-col items-start mr-8">
-                    <label className="text-xs text-gray-600 mb-1">
+                    <label className="text-xs text-gray-600 dark:text-gray-300 mb-1">
                       Hour Range :{" "}
                     </label>
                     <div className="flex gap-2 items-center">
@@ -342,7 +341,7 @@ const Dashboard = () => {
                           if (min > max) min = max;
                           setHourRange([min, max]);
                         }}
-                        className="border border-gray-300 rounded px-2 py-1 w-14 bg-white"
+                        className="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 rounded px-2 py-1 w-16 "
                         placeholder="From"
                       />
                       <span>-</span>
@@ -359,7 +358,7 @@ const Dashboard = () => {
                           }
                           setHourRange([min, max]);
                         }}
-                        className="border border-gray-300 rounded px-2 py-1 w-14 bg-white"
+                        className="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 rounded px-2 py-1 w-16 "
                         placeholder="To"
                       />
                     </div>
@@ -396,6 +395,7 @@ const Dashboard = () => {
                   endDate={endDate}
                   selectsRange
                   inline
+                  calendarClassName="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
                 />
               </div>
             )}
@@ -406,17 +406,17 @@ const Dashboard = () => {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
               {/* Daily Revenue Graph Card */}
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
                 <LineGraph dataProps={dailyRevenueData} label="Daily Revenue" />
               </div>
 
               {/* Daily Orders Count Graph Card */}
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
                 <LineGraph dataProps={dailyOrdersCount} label="Daily Orders" />
               </div>
 
               {/* Daily Average Order Value Graph Card */}
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
                 <LineGraph
                   dataProps={dailyAverageOrderValue}
                   label="Daily Average Order Value"
@@ -424,26 +424,26 @@ const Dashboard = () => {
               </div>
 
               {/* Peak Hours Graph Card */}
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
                 <GroupedBarGraph trendy_hours={trendyHrs} />
               </div>
             </div>
 
             {/* Top Restaurants Table */}
-            <div className="bg-white rounded-lg shadow-lg p-8 mt-8">
-              <h3 className="text-xl font-semibold mb-6 text-gray-800">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 mt-8">
+              <h3 className="text-xl font-semibold mb-6 text-gray-800 dark:text-gray-100">
                 Top 3 Restaurants by Revenue from{" "}
                 {startDate.toLocaleDateString()} to{" "}
                 {endDate.toLocaleDateString()}
               </h3>
-              <div className="overflow-x-auto rounded-lg border border-gray-200">
-                <table className="min-w-full bg-white">
+              <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+                <table className="min-w-full bg-white dark:bg-gray-800">
                   <thead>
                     <tr>
-                      <th className="border border-gray-200 px-4 py-2 text-left bg-gray-50 text-sm text-gray-700 font-semibold">
+                      <th className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-left bg-gray-50 dark:bg-gray-900 text-sm text-gray-700 dark:text-gray-200 font-semibold">
                         Restaurant Name
                       </th>
-                      <th className="border border-gray-200 px-4 py-2 text-left bg-gray-50 text-sm text-gray-700 font-semibold">
+                      <th className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-left bg-gray-50 dark:bg-gray-900 text-sm text-gray-700 dark:text-gray-200 font-semibold">
                         Revenue
                       </th>
                     </tr>
@@ -452,10 +452,10 @@ const Dashboard = () => {
                     {topRestaurants && topRestaurants.length > 0 ? (
                       topRestaurants.map((restaurant, idx) => (
                         <tr key={idx}>
-                          <td className="border border-gray-200 px-4 py-2 text-left">
+                          <td className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-left dark:text-gray-200">
                             {restaurant.restaurant_name}
                           </td>
-                          <td className="border border-gray-200 px-4 py-2 text-left">
+                          <td className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-left dark:text-gray-200">
                             ${restaurant.max_revenue}
                           </td>
                         </tr>
@@ -464,7 +464,7 @@ const Dashboard = () => {
                       <tr>
                         <td
                           colSpan="2"
-                          className="border border-gray-200 px-4 py-2 text-center text-gray-500"
+                          className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-center text-gray-500 dark:text-gray-400"
                         >
                           No data available
                         </td>
@@ -478,6 +478,7 @@ const Dashboard = () => {
         )}
       </div>
     </div>
+
   );
 };
 
