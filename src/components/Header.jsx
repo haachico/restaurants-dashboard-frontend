@@ -1,4 +1,5 @@
 import { useTheme } from "../context/ThemeContext";
+import ThemeToggler from "./ThemeToggler";
 
 const Header = () => {
   const { theme, setTheme } = useTheme();
@@ -9,14 +10,16 @@ const Header = () => {
           <h1 className="text-3xl font-bold text-[#000] dark:text-white">DineDash</h1>
         </div>
         <div className="flex items-center">
-          <button
+          {/* <button
             onClick={() => {
               setTheme((prev) => (prev === "light" ? "dark" : "light"));
             }}
             className="ml-4 p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200"
           >
             Toggle Theme
-          </button>
+          </button> */}
+
+          <ThemeToggler />
         </div>
       </div>
     </header>

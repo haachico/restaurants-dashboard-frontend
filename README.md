@@ -1,12 +1,99 @@
-# React + Vite
+# DineDash Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive dashboard for restaurant analytics built with **React**, **Tailwind CSS**, and **Chart.js**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## Expanding the ESLint configuration
+- **Restaurant Listing:**  
+  View, search, filter, and paginate restaurants by name, location, and cuisine.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Restaurant Metrics:**  
+  Select a restaurant and date range to view:
+  - Daily Revenue (line chart)
+  - Daily Orders Count (line chart)
+  - Daily Average Order Value (line chart)
+  - Peak Order Hour per Day (grouped bar chart)
+
+- **Top Performers:**  
+  See the top 3 restaurants by revenue for a selected date range.
+
+- **Advanced Filters:**  
+  Filter metrics by amount range and hour range.
+
+- **Dark/Light Theme:**  
+  Toggle between dark and light mode. Theme is managed via React context and Tailwind’s `dark:` classes.
+
+- **Responsive Design:**  
+  Works well on desktop and mobile screens.
+
+---
+
+## 🛠️ Tech Stack
+
+- **React** (with hooks and context)
+- **Tailwind CSS** (utility-first styling, dark mode support)
+- **Chart.js** (via `react-chartjs-2`)
+- **Material UI** (for theme toggle switch)
+- **Vite** (for fast development)
+
+---
+
+## 🚀 Getting Started
+
+1. **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd restaurants-dashboard-frontend/restaurants-dashboard
+    ```
+
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3 **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+
+4. **Open in browser:**  
+   Visit [http://localhost:5173](http://localhost:5173)
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+  components/      // Reusable UI components (Header, ThemeToggler, graphs, etc.)
+  context/         // Theme context for dark/light mode
+  pages/           // Main pages (Dashboard, etc.)
+  App.jsx          // App entry point
+  main.jsx         // Vite entry point
+tailwind.config.js // Tailwind CSS config (darkMode: 'class')
+```
+
+---
+
+## 🎨 Theming
+
+- Theme is toggled using the switch in the header.
+- The current theme is stored in React context and updates the `dark` class on `<html>`.
+- Tailwind’s `dark:` classes are used throughout for seamless dark mode support.
+
+---
+
+## 📝 Customization
+
+- **API Integration:**  
+  The dashboard expects backend APIs for restaurants and metrics. Update API endpoints as needed.
+- **Styling:**  
+  Easily customize colors and layout via Tailwind classes.
+
+---
+
+
+**Made with ❤️ using React
